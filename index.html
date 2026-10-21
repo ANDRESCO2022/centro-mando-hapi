@@ -669,31 +669,20 @@
         name: 'Alphabet Inc. (Google)',
         role: 'Satélite IA • EN CARTERA',
         shares: 0.02909,
-        investedUSD: 9.90,
-        priceUSD: 340.27,
-        changePct: '+0,40% Hoy',
-        positive: true,
+        investedUSD: 9.89,
+        priceUSD: 339.98,
+        changePct: '-0,99% Hoy (-$0,09)',
+        positive: false,
         weight: '38,6%'
-      },
-      {
-        ticker: 'VOO',
-        name: 'Vanguard S&P 500 ETF',
-        role: 'Núcleo ETF • EN CARTERA',
-        shares: 0.0071,
-        investedUSD: 5.02,
-        priceUSD: 707.14,
-        changePct: '+0,30% Hoy',
-        positive: true,
-        weight: '19,6%'
       },
       {
         ticker: 'NU',
         name: 'Nu Holdings Ltd.',
         role: 'Satélite LatAm • EN CARTERA',
         shares: 0.3427,
-        investedUSD: 5.18,
-        priceUSD: 15.11,
-        changePct: '+0,59% Hoy',
+        investedUSD: 5.17,
+        priceUSD: 15.09,
+        changePct: '+3,56% Hoy (+$0,17)',
         positive: true,
         weight: '20,2%'
       },
@@ -702,10 +691,21 @@
         name: 'Bitcoin (Satélite Cripto)',
         role: 'Cripto 24/7 • EN CARTERA',
         shares: 0.00006093,
-        investedUSD: 5.04,
-        priceUSD: 82669.09,
-        changePct: '-0,33% Hoy',
-        positive: false,
+        investedUSD: 5.03,
+        priceUSD: 82553.75,
+        changePct: '+0,78% Hoy (+$0,03)',
+        positive: true,
+        weight: '19,6%'
+      },
+      {
+        ticker: 'VOO',
+        name: 'Vanguard S&P 500 ETF',
+        role: 'Núcleo ETF • EN CARTERA',
+        shares: 0.0071,
+        investedUSD: 5.02,
+        priceUSD: 707.04,
+        changePct: '+0,42% Hoy (+$0,02)',
+        positive: true,
         weight: '19,6%'
       },
       {
@@ -715,7 +715,7 @@
         shares: 0.5100,
         investedUSD: 0.51,
         priceUSD: 1.00,
-        changePct: 'Disponible',
+        changePct: 'Disponible (1,99%)',
         positive: true,
         weight: '2,0%'
       }
@@ -927,7 +927,7 @@
           <td class="py-3 px-3 font-bold text-white">${invStr}</td>
           <td class="py-3 px-3 text-slate-300">${priceStr}</td>
           <td class="py-3 px-3">
-            <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span class="px-2 py-0.5 rounded-md text-xs font-semibold ${pos.positive ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : (pos.ticker === 'CASH' ? 'bg-sky-500/20 text-sky-300 border-sky-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30')}">
               ${pos.changePct}
             </span>
           </td>
