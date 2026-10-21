@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de Mando de Inversiones PRO — Hapi & Ecosistema Google</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .tab-active {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .touch-scroll { -webkit-overflow-scrolling: touch; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-28 sm:pb-12">
+
+  <!-- Top Header / Hero Banner -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-base sm:text-lg shrink-0">
+          H
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            <h1 class="text-sm sm:text-xl font-bold tracking-tight text-white">Terminal Inversión PRO</h1>
+            <span class="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium shrink-0">En Vivo</span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-400">Martes 20 Oct 2026 • Hapi (EE. UU.) • Plan $25 USD/mes</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between sm:justify-start gap-3 bg-slate-800/80 border border-slate-700/70 rounded-xl px-3 py-1.5 sm:px-3.5 sm:py-2 w-full sm:w-auto">
+        <div class="flex-1 sm:flex-initial">
+          <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 block">TRM Hoy (USD/COP)</span>
+          <span id="headerTrmVal" class="text-xs sm:text-sm font-bold text-amber-400">$3.156,32 COP</span>
+        </div>
+        <div class="h-6 sm:h-7 w-px bg-slate-700"></div>
+        <div class="flex-1 sm:flex-initial text-right sm:text-left">
+          <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 block">Centinela 24/7</span>
+          <span id="liveSyncBadge" class="text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center justify-end sm:justify-start gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sheet Sincronizado
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs (Mobile swipeable ribbon + Desktop wrap) -->
+    <div class="max-w-6xl mx-auto px-2.5 sm:px-4 pb-2.5 flex overflow-x-auto no-scrollbar touch-scroll flex-nowrap sm:flex-wrap gap-1.5">
+      <button id="tabBtn-resumen" data-tab="resumen" class="nav-tab tab-active shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        1. Portafolio Real ($25)
+      </button>
+      <button id="tabBtn-dictamen" data-tab="dictamen" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        2. Conclusiones & Consejos
+      </button>
+      <button id="tabBtn-capacitacion" data-tab="capacitacion" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        3. Escuela del Día (BTC)
+      </button>
+      <button id="tabBtn-radar" data-tab="radar" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        4. Radar 15 Empresas
+      </button>
+      <button id="tabBtn-comparador" data-tab="comparador" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        5. Cara a Cara
+      </button>
+      <button id="tabBtn-planificador" data-tab="planificador" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        6. Repartidor Mes 2
+      </button>
+      <button id="tabBtn-simulador" data-tab="simulador" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        7. Simulador DCA
+      </button>
+      <button id="tabBtn-protocolo" data-tab="protocolo" class="nav-tab bg-slate-800/80 hover:bg-slate-800 text-slate-300 shrink-0 text-xs font-semibold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition whitespace-nowrap">
+        8. Protocolo Maestro
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pt-6 space-y-6">
+
+    <!-- Executive Dictamen Banner Always Visible at Top -->
+    <section class="bg-gradient-to-r from-blue-950/90 via-slate-900 to-indigo-950/90 border border-blue-500/30 rounded-2xl p-4 sm:p-5 shadow-lg">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400">
+            <span>Veredicto Ejecutivo del Día</span>
+            <span>•</span>
+            <span>20 Oct 2026</span>
+          </div>
+          <h2 class="text-base sm:text-lg font-bold text-white">
+            Reporte Diario Martes 20 Oct: Mercado Abierto en NY • Portafolio de $26 USD en Operación.
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-300">
+            <strong>Pulso de Hoy:</strong> La TRM en Colombia bajó a <strong>$3$3.156,32 COP</strong> (-$18,35 COP frente a ayer). La sesión en Nueva York está activa desde las 8:30 a.m. Tus órdenes de <strong>GOOGL ($10,15)</strong> y <strong>VOO ($5,15)</strong> están en rueda de mercado. Hoy iniciamos la <strong>Lección LEC-004</strong>: Gestión de riesgo y satélite cripto con Bitcoin.
+          </p>
+        </div>
+        <div class="flex shrink-0 flex-col sm:flex-row gap-2 w-full sm:w-auto pt-1 sm:pt-0">
+          <button id="quickGoDictamen" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl transition shadow text-center">
+            Ver Recomendaciones de Hoy →
+          </button>
+          <button id="quickGoComparador" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs font-semibold px-3.5 py-2.5 rounded-xl transition text-center">
+            Comparar Empresas →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 1: MI PORTAFOLIO REAL ($25 USD) -->
+    <section id="view-resumen" class="tab-view space-y-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+          <span class="text-xs text-slate-400 font-medium">Capital Total ($25 + $1 Premio)</span>
+          <div class="mt-1 flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-white">$26,00 USD</span>
+            <span class="text-xs font-semibold text-emerald-400">+$1,00 BTC Regalo</span>
+          </div>
+          <p class="mt-2 text-[11px] text-slate-400">Depósito $25,00 USD + Premio BTCUSD $1,00 USD</p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+          <span class="text-xs text-slate-400 font-medium">En Activos (2 Listas + 2 Pend.)</span>
+          <div class="mt-1 flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-emerald-400">$25,00 USD</span>
+            <span class="text-xs font-semibold text-amber-300">$15 en cola NY</span>
+          </div>
+          <p class="mt-2 text-[11px] text-slate-400">$10 ejecutados (NU+BTC) y $15 pendientes (GOOGL+VOO)</p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+          <span class="text-xs text-slate-400 font-medium">Efectivo Libre Remanente</span>
+          <div class="mt-1 flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-sky-400">$0,51 USD</span>
+            <span class="text-xs font-semibold text-slate-400">~$1.619 COP</span>
+          </div>
+          <p class="mt-2 text-[11px] text-slate-400">Tras $0,49 USD en tarifas ($0,15 x 3 + $0,04 BTC)</p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+          <span class="text-xs text-slate-400 font-medium">Próximo Aporte Programado</span>
+          <div class="mt-1 flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-amber-400">$25,00 USD</span>
+            <span class="text-xs font-semibold text-amber-300">19 Nov 2026</span>
+          </div>
+          <p class="mt-2 text-[11px] text-slate-400">Recordatorio creado en tu Google Tasks</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base font-bold text-white">Mis 3 Posiciones Reales en Hapi</h3>
+              <p class="text-xs text-slate-400">Datos depurados y sincronizados con tu compra de este fin de semana</p>
+            </div>
+            <div class="flex gap-1.5">
+              <button id="currencyToggleUSD" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white">USD ($)</button>
+              <button id="currencyToggleCOP" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">COP ($)</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400">
+                  <th class="py-2.5 pr-3">Activo</th>
+                  <th class="py-2.5 px-3">Rol</th>
+                  <th class="py-2.5 px-3">Fracciones</th>
+                  <th class="py-2.5 px-3">Invertido</th>
+                  <th class="py-2.5 px-3">Precio Hoy</th>
+                  <th class="py-2.5 px-3">Cambio Día</th>
+                  <th class="py-2.5 pl-3 text-right">Peso</th>
+                </tr>
+              </thead>
+              <tbody id="positionsTableBody" class="divide-y divide-slate-800/70 text-xs sm:text-sm"></tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 p-3.5 rounded-xl bg-slate-800/50 border border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-300">
+            <div>
+              <span class="font-semibold text-white">Auditoría de tu Historial (19 oct):</span> Muy bien canceladas las órdenes del 17 oct (-$14,30 y -$5,30) que cobraban tarifa extendida. Tus órdenes de hoy en <strong>VOO (-$5,15)</strong> y <strong>GOOGL (-$10,15)</strong> están <strong>Pendientes</strong> porque Nueva York cierra a las <strong>3:00 p.m. hora Colombia</strong> y las enviaste a las 3:14 y 3:16 p.m. Se ejecutarán mañana martes a las 8:30 a.m.
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Distribución de tu Cartera</h3>
+            <p class="text-xs text-slate-400 mb-3">Estructura Núcleo (56%) + 2 Satélites (40%) + Caja (4%)</p>
+            <div class="relative h-56">
+              <canvas id="allocationChart"></canvas>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 space-y-1.5 text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Riesgo Ponderado:</span>
+              <span class="font-semibold text-emerald-400">Moderado-Crecimiento</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Exposición a EE. UU. (USD):</span>
+              <span class="font-semibold text-white">80% (VOO + GOOGL)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Exposición LatAm (USD):</span>
+              <span class="font-semibold text-white">20% (NU)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CONCLUSIÓN, OBSERVACIONES Y RECOMENDACIONES -->
+    <section id="view-dictamen" class="tab-view hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-slate-900 border border-blue-500/40 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">1</span>
+            <h3 class="text-base font-bold text-white">Conclusión del Día</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Tu portafolio real inició con el pie derecho: tienes una estructura <strong>Core-Satellite profesional</strong> a escala de $25 USD. Al destinar el <strong>58% del capital invertido a VOO</strong> ($14 USD), aseguras que la mayor parte de tu dinero crezca al ritmo de las 500 empresas más grandes de EE. UU., mientras que <strong>NU ($5 USD)</strong> y <strong>GOOGL ($5 USD)</strong> te dan aceleración en banca digital e inteligencia artificial.
+          </p>
+          <div class="p-3 rounded-xl bg-blue-950/50 border border-blue-800/50 text-xs text-blue-200">
+            <strong>Meta del Mes 1 cumplida:</strong> Rompiste la inercia con costos controlados ($0,10 USD por orden) y sin pagar sobrecostos de horario extendido.
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">2</span>
+            <h3 class="text-base font-bold text-white">Observaciones Clave</h3>
+          </div>
+          <ul class="space-y-2.5 text-xs sm:text-sm text-slate-300">
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 font-bold">•</span>
+              <span><strong>Dólar a tu favor ($3.174 COP):</strong> La tasa de cambio actual en Colombia está en niveles bajos frente al promedio del último año, lo que te permitió comprar más fracciones de dólares con menos pesos.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 font-bold">•</span>
+              <span><strong>Fricción de la comisión PSE ($1,99 USD):</strong> En esta primera recarga de $25 USD, la comisión fija de PSE representó el 7,9%. Fue útil para aprender, pero para las siguientes recargas debemos diluir ese costo.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-400 font-bold">•</span>
+              <span><strong>Valoración de Google (GOOGL):</strong> Cotiza a un múltiplo PER de ~17,3x, siendo hoy la más barata de las grandes tecnológicas frente a sus ganancias reales.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-emerald-500/40 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">3</span>
+            <h3 class="text-base font-bold text-white">Recomendaciones de Inversión</h3>
+          </div>
+          <ul class="space-y-2.5 text-xs sm:text-sm text-slate-300">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><strong>Mantener las 3 posiciones actuales (Hold):</strong> No vendas ni modifiques tus fracciones de VOO, NU ni GOOGL; déjalas trabajar a largo plazo.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><strong>Estrategia para tu próximo aporte de $25 USD:</strong> Guarda los ~$80.000 COP del próximo mes en una cajita remunerada al 11% E.A. y recarga <strong>$50 USD cada dos meses</strong> para bajar la comisión de PSE del 8% al 3,9%.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><strong>Próxima empresa a incorporar (Mes 2/3):</strong> Considera sumar <strong>$5 USD en Coca-Cola (KO)</strong> para añadir un escudo defensivo que te pague dividendos trimestrales en efectivo.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <h3 class="text-base font-bold text-white mb-3">Hoja de Ruta Accionable para esta Semana</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 cursor-pointer">
+            <input type="checkbox" checked class="mt-0.5 rounded bg-slate-900 border-slate-600 text-blue-500" />
+            <span><strong>Paso 1 (Completado):</strong> Ejecutar primera compra piloto en horario regular ($14 VOO, $5 NU, $5 GOOGL).</span>
+          </label>
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 cursor-pointer">
+            <input type="checkbox" class="mt-0.5 rounded bg-slate-900 border-slate-600 text-blue-500" />
+            <span><strong>Paso 2 (Esta semana):</strong> Verificar en el historial de Hapi el comprobante PDF de tus 3 operaciones para conocer tus decimales exactos.</span>
+          </label>
+          <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 cursor-pointer">
+            <input type="checkbox" class="mt-0.5 rounded bg-slate-900 border-slate-600 text-blue-500" />
+            <span><strong>Paso 3 (19 Noviembre):</strong> Atender el recordatorio automático de Google Tasks para el Aporte #2.</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ESCUELA PRÁCTICA DEL DÍA & SIMULADOR DE DECISIONES -->
+    <section id="view-capacitacion" class="tab-view hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Entrenamiento Práctico Aplicado • Lección Interactiva</span>
+            <h3 class="text-lg font-bold text-white mt-0.5">Domina los Indicadores Reales de tu Portafolio en 3 Minutos</h3>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button data-lesson="1" class="lesson-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Nivel 1: Valoración</button>
+            <button data-lesson="2" class="lesson-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Nivel 2: Cuándo Comprar</button>
+            <button data-lesson="3" class="lesson-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Nivel 3: Dividendos</button>
+            <button data-lesson="4" class="lesson-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white">LEC-004: Bitcoin & Satélites</button>
+          </div>
+        </div>
+
+        <div id="lessonContentArea" class="space-y-4"></div>
+      </div>
+
+      <!-- Interactive Decision Game: ¿Qué harías hoy? -->
+      <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Laboratorio de Decisiones Reales</span>
+            <h3 class="text-base font-bold text-white">Simulador: "¿Qué harías hoy con tus $25 USD si pasa esto?"</h3>
+          </div>
+          <div class="flex gap-1.5">
+            <button data-scenario="A" class="scenario-btn px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Caso 1: Nu sube a $16,50</button>
+            <button data-scenario="B" class="scenario-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Caso 2: Dólar sube a $3.600</button>
+            <button data-scenario="C" class="scenario-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Caso 3: S&P 500 cae -6%</button>
+          </div>
+        </div>
+        <div id="scenarioBox" class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: RADAR HAPI (15 EMPRESAS) -->
+    <section id="view-radar" class="tab-view hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Semáforo de las Acciones de tu Lista en Hapi</h3>
+            <p class="text-xs text-slate-400">Filtra por categoría para decidir dónde poner los próximos $10 USD satélites de tus aportes mensuales</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button data-filter="ALL" class="radar-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white">Todos</button>
+            <button data-filter="PORTAFOLIO" class="radar-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">En mi Portafolio</button>
+            <button data-filter="TECH" class="radar-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Tecnología / IA</button>
+            <button data-filter="DEFENSIVO" class="radar-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">Defensivos / ETFs</button>
+          </div>
+        </div>
+
+        <div id="radarCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: COMPARADOR CARA A CARA (HEAD-TO-HEAD) -->
+    <section id="view-comparador" class="tab-view hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Herramienta Pro de Selección</span>
+            <h3 class="text-lg font-bold text-white">Comparador Cara a Cara de Empresas en Hapi</h3>
+            <p class="text-xs text-slate-400">Enfrenta dos activos de tu lista para decidir cuál merece tus próximos $5 o $10 USD</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="compSelectA" class="bg-slate-800 border border-slate-700 text-white text-xs font-bold rounded-xl px-3 py-2">
+              <option value="GOOGL" selected>GOOGL (Alphabet)</option>
+              <option value="MSFT">MSFT (Microsoft)</option>
+              <option value="NU">NU (Nu Holdings)</option>
+              <option value="KO">KO (Coca-Cola)</option>
+              <option value="VOO">VOO (S&P 500 ETF)</option>
+              <option value="NVDA">NVDA (NVIDIA)</option>
+              <option value="AAPL">AAPL (Apple)</option>
+            </select>
+            <span class="text-xs font-extrabold text-slate-400">VS</span>
+            <select id="compSelectB" class="bg-slate-800 border border-slate-700 text-white text-xs font-bold rounded-xl px-3 py-2">
+              <option value="GOOGL">GOOGL (Alphabet)</option>
+              <option value="MSFT" selected>MSFT (Microsoft)</option>
+              <option value="NU">NU (Nu Holdings)</option>
+              <option value="KO">KO (Coca-Cola)</option>
+              <option value="VOO">VOO (S&P 500 ETF)</option>
+              <option value="NVDA">NVDA (NVIDIA)</option>
+              <option value="AAPL">AAPL (Apple)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div id="compCardsContainer" class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+          <div class="bg-slate-800/50 border border-slate-700/70 rounded-xl p-4 flex flex-col justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-white mb-1">Puntaje Comparativo (0 a 100)</h4>
+              <p class="text-[11px] text-slate-400 mb-3">Valoración (barato), Crecimiento, Estabilidad y Dividendos</p>
+              <div class="relative h-56">
+                <canvas id="compChartCanvas"></canvas>
+              </div>
+            </div>
+            <div id="compWinnerBanner" class="mt-3 p-3 rounded-xl bg-blue-950/60 border border-blue-500/30 text-xs text-blue-200"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: REPARTIDOR VISUAL MES 2 & CONEXIÓN GOOGLE -->
+    <section id="view-planificador" class="tab-view hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Interactive Next Deposit Allocator -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Laboratorio de Asignación • Aporte #2</span>
+            <h3 class="text-base font-bold text-white">Repartidor Visual de tu Próxima Recarga en Hapi</h3>
+            <p class="text-xs text-slate-400">Elige si recargarás $25 USD (mensual) o $50 USD (bimensual) y ajusta cómo los vas a repartir</p>
+          </div>
+
+          <div class="flex gap-2">
+            <button id="planDeposit25" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white border border-blue-400">
+              Recarga Mensual: $25 USD
+            </button>
+            <button id="planDeposit50" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700">
+              Puente Bimensual: $50 USD
+            </button>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="font-semibold text-white">Núcleo VOO (S&P 500):</span>
+                <span id="allocVooLabel" class="font-bold text-blue-400">60% ($15,00 USD)</span>
+              </div>
+              <input id="allocVooSlider" type="range" min="40" max="80" step="5" value="60" class="w-full accent-blue-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="font-semibold text-white">Satélite 1 (GOOGL / MSFT):</span>
+                <span id="allocTechLabel" class="font-bold text-emerald-400">20% ($5,00 USD)</span>
+              </div>
+              <input id="allocTechSlider" type="range" min="0" max="40" step="5" value="20" class="w-full accent-emerald-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="font-semibold text-white">Satélite 2 (NU / KO Dividendos):</span>
+                <span id="allocSat2Label" class="font-bold text-purple-400">20% ($5,00 USD)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="allocSat2Bar" class="bg-purple-500 h-full" style="width: 20%;"></div>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Se ajusta automáticamente para completar el 100% de tu recarga.</p>
+            </div>
+          </div>
+
+          <div id="planSummaryBox" class="p-3.5 rounded-xl bg-slate-800/70 border border-slate-700 space-y-2 text-xs"></div>
+        </div>
+
+        <!-- Ecosystem Connection Cards -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Ecosistema Google Conectado</span>
+            <h3 class="text-base font-bold text-white">Tus 5 Herramientas Activas y Listas</h3>
+            <p class="text-xs text-slate-400">Todo tu sistema ya quedó sincronizado con tu hoja maestra</p>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-start justify-between gap-3">
+              <div>
+                <div class="font-bold text-white flex items-center gap-2">
+                  <span>1. Cuaderno en NotebookLM (Audio Podcast & IA)</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">Creado</span>
+                </div>
+                <p class="text-slate-300 mt-1">Contiene tu manual de Hapi, análisis de las 15 empresas y tus tesis reales para generar resúmenes de audio.</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-start justify-between gap-3">
+              <div>
+                <div class="font-bold text-white flex items-center gap-2">
+                  <span>2. Agente Centinela Condicional (Cada 4 horas)</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">Activo</span>
+                </div>
+                <p class="text-slate-300 mt-1">Vigila en silencio si el dólar baja de $3.150 COP, si NU supera los $16 USD o si VOO/GOOGL caen más de 2,5%.</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-start justify-between gap-3">
+              <div>
+                <div class="font-bold text-white flex items-center gap-2">
+                  <span>3. Pestaña Plana para Looker Studio y AppSheet</span>
+                  <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px]">Lista en Sheet</span>
+                </div>
+                <p class="text-slate-300 mt-1">La nueva hoja <code>vista_looker_appsheet</code> tiene formato plano en A1:L5 para crear tu app móvil desde <em>Extensiones &gt; AppSheet</em> o conectar a Looker Studio.</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/70 flex items-start justify-between gap-3">
+              <div>
+                <div class="font-bold text-white flex items-center gap-2">
+                  <span>4. Recordatorio Mensual en Google Tasks</span>
+                  <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px]">Programado día 19</span>
+                </div>
+                <p class="text-slate-300 mt-1">Tarea recurrente creada cada día 19 del mes a las 9:00 a. m. para tu aporte de $25 USD.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: SIMULADOR DCA FUTURO -->
+    <section id="view-simulador" class="tab-view hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-5">
+          <div>
+            <h3 class="text-base font-bold text-white">Calculadora de Interés Compuesto DCA</h3>
+            <p class="text-xs text-slate-400">Mira cómo crecen tus $25 USD iniciales al mantener la constancia mensual</p>
+          </div>
+
+          <div class="space-y-4 text-xs sm:text-sm">
+            <div>
+              <div class="flex justify-between mb-1">
+                <label class="text-slate-300 font-medium">Aporte Mensual (USD):</label>
+                <span id="simMonthlyLabel" class="font-bold text-blue-400">$25 USD</span>
+              </div>
+              <input id="simMonthlyInput" type="range" min="15" max="200" step="5" value="25" class="w-full accent-blue-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1">
+                <label class="text-slate-300 font-medium">Horizonte de Tiempo (Años):</label>
+                <span id="simYearsLabel" class="font-bold text-blue-400">5 años</span>
+              </div>
+              <input id="simYearsInput" type="range" min="1" max="15" step="1" value="5" class="w-full accent-blue-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1">
+                <label class="text-slate-300 font-medium">Rentabilidad Anual Estimada (%):</label>
+                <span id="simRateLabel" class="font-bold text-emerald-400">11% E.A.</span>
+              </div>
+              <input id="simRateInput" type="range" min="6" max="18" step="1" value="11" class="w-full accent-emerald-500 cursor-pointer" />
+              <p class="text-[11px] text-slate-400 mt-1">El promedio histórico del S&P 500 (VOO) en dólares es ~10% a 11% anual.</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Total puesto de tu bolsillo:</span>
+              <span id="simTotalContributed" class="font-bold text-white">$1.525 USD</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Ganancia por Interés Compuesto:</span>
+              <span id="simTotalInterest" class="font-bold text-emerald-400">+$492 USD</span>
+            </div>
+            <div class="pt-2 border-t border-slate-700 flex justify-between text-sm">
+              <span class="font-bold text-white">Patrimonio Final Estimado:</span>
+              <span id="simFinalBalance" class="font-extrabold text-amber-400">$2.017 USD</span>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-400">
+              <span>Equivalente en pesos (a TRM hoy):</span>
+              <span id="simFinalCOP">~$6.403.309 COP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Curva de Crecimiento Patrimonial (Aportes vs. Valor Total)</h3>
+            <p class="text-xs text-slate-400 mb-4">La brecha verde es el dinero que tus activos trabajan por ti sin esfuerzo adicional</p>
+            <div class="relative h-72">
+              <canvas id="dcaSimChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- TAB 8: MI PROTOCOLO MAESTRO DE INVERSIÓN -->
+    <section id="view-protocolo" class="tab-view hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-5">
+        <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Reglamento Personal • Método 4 Pasos + 6 Pilares</span>
+            <h3 class="text-lg font-bold text-white mt-0.5">Mi Protocolo Maestro de Inversión ($25 USD/mes en Hapi)</h3>
+            <p class="text-xs text-slate-400">Tu sistema blindado paso a paso para invertir con método institucional, sin apuestas ni emociones</p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold self-start sm:self-center">
+            Perfil: Moderado-Crecimiento (5+ años)
+          </span>
+        </div>
+
+        <!-- Fase 1 a 4 (Los 4 Pasos + Escudo de Riesgo) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Fase 1 • Flujo de Caja y Puente en COP</span>
+              <span class="text-[11px] text-slate-400">Antes de operar</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Separar primero, invertir sin urgencias</h4>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li>• <strong>Cuota fija innegociable:</strong> $25 USD mensuales (~$80.000 COP) separados el día 19 de cada mes.</li>
+              <li>• <strong>Optimización de comisión PSE ($1,99 USD):</strong> Si la TRM supera los $3.350 COP o deseas reducir la comisión del 7,9% al 3,9%, guarda la cuota en tu cajita remunerada (~11% E.A.) y transfiere <strong>$50 USD cada dos meses</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Fase 2 • Distribución Core-Satellite</span>
+              <span class="text-[11px] text-slate-400">Asignación de Cartera</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Porcentajes fijos según tu perfil</h4>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li>• <strong>56% a 60% en Núcleo Estabilizador (VOO):</strong> Tu seguro indexado a las 500 mayores empresas de EE. UU. ($14–$15 USD de cada aporte).</li>
+              <li>• <strong>20% en Satélite Big Tech & IA (GOOGL / MSFT):</strong> Empresas líderes con flujo de caja real y múltiplo PER razonable ($5 USD).</li>
+              <li>• <strong>20% en Satélite Crecimiento o Dividendos (NU / KO):</strong> Expansión regional o renta defensiva trimestral ($5 USD).</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Fase 3 • Reglas de Ejecución en Hapi</span>
+              <span class="text-[11px] text-slate-400">Cero sobrecostos</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Disciplina operativa en Nueva York</h4>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li>• <strong>Solo Horario Regular (9:30 a.m. – 4:00 p.m. NY):</strong> Nunca activar horario extendido en compras de $5 a $15 USD para pagar solo $0,10 USD por orden.</li>
+              <li>• <strong>Filtro rápido de 3 minutos antes de comprar:</strong> Revisar en la Pestaña 4/5 que el múltiplo PER sea coherente y priorizar el activo que esté en descuento.</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-purple-400">Fase 4 • El Escudo (Pilar 5 y 6 de Riesgo)</span>
+              <span class="text-[11px] text-slate-400">Protección Patrimonial</span>
+            </div>
+            <h4 class="text-sm font-bold text-white">Control emocional y filtro anti-trampas</h4>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li>• <strong>Ante caídas (-3% a -10%):</strong> Prohibido vender en pánico; se mantiene el plan y se compran más fracciones a menor precio.</li>
+              <li>• <strong>Toma de ganancias con regla fija:</strong> En NU solo se vende 30%–50% si supera los <strong>$16,00 USD</strong> para rotar esa ganancia a VOO o KO.</li>
+              <li>• <strong>Pilar 6 Anti-Fraude:</strong> Nunca invertir fuera de brókers regulados (SEC/FINRA/SFC) ni en promesas de rentabilidad fija en dólares mayor al 1% mensual.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Rutina Automatizada en 3 Ritmos -->
+        <div class="p-4 rounded-xl bg-blue-950/30 border border-blue-500/30 space-y-3">
+          <h4 class="text-sm font-bold text-white">Tu Rutina Automatizada en 3 Ritmos (Cómo funciona tu sistema solo)</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-lg bg-slate-900/90 border border-slate-800">
+              <span class="font-bold text-emerald-400 block mb-1">1. Cada 4 Horas (Centinela)</span>
+              <p class="text-slate-300">Vigila en automático si la TRM baja de $3.150 COP, si NU supera $16,00 USD o si VOO/GOOGL caen &gt;2,5%.</p>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-900/90 border border-slate-800">
+              <span class="font-bold text-blue-400 block mb-1">2. Todos los días 9:00 a.m.</span>
+              <p class="text-slate-300">Recibes este Dashboard actualizado con tu Pulso Real, Lección Práctica de 3 minutos y Conclusión del Día.</p>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-900/90 border border-slate-800">
+              <span class="font-bold text-amber-400 block mb-1">3. Día 19 de cada mes</span>
+              <p class="text-slate-300">Google Tasks te avisa a las 9:00 a.m., usas el Repartidor (Pestaña 6), ejecutas y registras en tu Google Sheet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let TRM = 3156.32;
+    let displayCurrency = 'USD';
+    let planDepositAmount = 25;
+
+    const realPositions = [
+      {
+        ticker: 'GOOGL',
+        name: 'Alphabet Inc. (Orden -$10,15)',
+        role: 'Satélite IA • PENDIENTE (15:16)',
+        shares: 0.0291,
+        investedUSD: 10.00,
+        priceUSD: 344.18,
+        changePct: 'Pendiente 8:30am',
+        positive: true,
+        weight: '39,2%'
+      },
+      {
+        ticker: 'VOO',
+        name: 'Vanguard S&P 500 (Orden -$5,15)',
+        role: 'Núcleo ETF • PENDIENTE (15:14)',
+        shares: 0.0071,
+        investedUSD: 5.00,
+        priceUSD: 704.60,
+        changePct: 'Pendiente 8:30am',
+        positive: true,
+        weight: '19,6%'
+      },
+      {
+        ticker: 'NU',
+        name: 'Nu Holdings Ltd. (Orden -$5,15)',
+        role: 'Satélite LatAm • TERMINADO (17 oct)',
+        shares: 0.3401,
+        investedUSD: 5.00,
+        priceUSD: 14.70,
+        changePct: 'Terminado ✓',
+        positive: true,
+        weight: '19,6%'
+      },
+      {
+        ticker: 'BTCUSD',
+        name: 'Bitcoin ($1 Premio + $4,04 Compra)',
+        role: 'Cripto 24/7 • TERMINADO (15:18)',
+        shares: 0.0001,
+        investedUSD: 5.00,
+        priceUSD: 81952.75,
+        changePct: 'Terminado ✓',
+        positive: true,
+        weight: '19,6%'
+      },
+      {
+        ticker: 'CASH',
+        name: 'Poder de Compra Libre (Hapi)',
+        role: 'Liquidez Remanente',
+        shares: 0.5100,
+        investedUSD: 0.51,
+        priceUSD: 1.00,
+        changePct: 'Disponible',
+        positive: true,
+        weight: '2,0%'
+      }
+    ];
+
+    const radarAssets = [
+      {
+        ticker: 'VOO',
+        name: 'Vanguard S&P 500 ETF',
+        category: 'PORTAFOLIO',
+        price: '$705,30 USD',
+        per: '24,5x',
+        status: 'En tu Cartera (56%)',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        verdict: 'Compra fija mensual ($14-$15 USD). Es la columna vertebral que te protege de caídas individuales.'
+      },
+      {
+        ticker: 'GOOGL',
+        name: 'Alphabet Inc.',
+        category: 'PORTAFOLIO',
+        price: '$344,94 USD',
+        per: '17,3x (Atractivo)',
+        status: 'En tu Cartera (20%)',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        verdict: 'La más barata de las Big Tech por múltiplo PER. Excelente elección para tu primer satélite tecnológico.'
+      },
+      {
+        ticker: 'NU',
+        name: 'Nu Holdings Ltd.',
+        category: 'PORTAFOLIO',
+        price: '$14,70 USD',
+        per: '28,1x (Crecimiento)',
+        status: 'En tu Cartera (20%)',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        verdict: 'Fuerte expansión en México y Colombia. Mantener; meta de toma parcial de ganancias arriba de $16 USD.'
+      },
+      {
+        ticker: 'KO',
+        name: 'Coca-Cola Co.',
+        category: 'DEFENSIVO',
+        price: '$93,86 USD',
+        per: '28,2x | Div: 2,26%',
+        status: 'Candidata Mes 2',
+        badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+        verdict: 'Ideal si el próximo mes quieres sumar una empresa defensiva que pague dividendos trimestrales en dólares.'
+      },
+      {
+        ticker: 'MSFT',
+        name: 'Microsoft Corp.',
+        category: 'TECH',
+        price: '$529,05 USD',
+        per: '29,5x',
+        status: 'En Radar (Calidad AAA)',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        verdict: 'Flujo de caja recurrente en nube (Azure) y Office. Buena alternativa para alternar con Google en futuros meses.'
+      },
+      {
+        ticker: 'QQQ',
+        name: 'Invesco Nasdaq 100 ETF',
+        category: 'DEFENSIVO',
+        price: '$709,80 USD',
+        per: '30,2x',
+        status: 'Opcional a Futuro',
+        badgeColor: 'bg-slate-700 text-slate-300 border-slate-600',
+        verdict: 'Agrupa las 100 tecnológicas más grandes. Como ya tienes VOO + GOOGL, no necesitas duplicarlo por ahora.'
+      },
+      {
+        ticker: 'NVDA',
+        name: 'NVIDIA Corp.',
+        category: 'TECH',
+        price: '$214,13 USD',
+        per: '38,4x (Volátil)',
+        status: 'Alta Volatilidad',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        verdict: 'Líder en chips de IA, pero ya pesa más del 6% dentro de tu VOO. Evita sobre-concentrarte en el corto plazo.'
+      },
+      {
+        ticker: 'SPY',
+        name: 'SPDR S&P 500 ETF',
+        category: 'DEFENSIVO',
+        price: '$763,23 USD',
+        per: '24,5x',
+        status: 'Descartar (Duplica VOO)',
+        badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+        verdict: 'Replica exactamente lo mismo que VOO pero cobra el triple de comisión anual (0,09% vs 0,03%). Quédate con VOO.'
+      }
+    ];
+
+    const compDatabase = {
+      GOOGL: { name: 'Alphabet Inc. (Google)', price: '$344,94 USD', per: '17,3x (Descuento)', div: '0,26% anual', roe: '32%', risk: 'Medio', scores: [92, 85, 88, 35], note: 'La mejor relación calidad-precio hoy entre las gigantes de IA y nube.' },
+      MSFT: { name: 'Microsoft Corp.', price: '$529,05 USD', per: '29,5x (Exigente)', div: '0,74% anual', roe: '36%', risk: 'Bajo-Medio', scores: [68, 86, 96, 55], note: 'Máxima seguridad institucional en software y Azure, pero cotiza a un múltiplo más caro que Google.' },
+      NU: { name: 'Nu Holdings Ltd.', price: '$14,70 USD', per: '28,1x (Crecimiento)', div: '0,00% (Reinvierte)', roe: '28%', risk: 'Medio-Alto', scores: [74, 95, 70, 10], note: 'Líder de hiper-crecimiento bancario en América Latina; ideal para capturar expansión regional.' },
+      KO: { name: 'Coca-Cola Co.', price: '$93,86 USD', per: '28,2x (Estable)', div: '2,26% anual', roe: '42%', risk: 'Bajo', scores: [72, 55, 95, 92], note: 'Escudo defensivo por excelencia: paga dividendos crecientes cada trimestre sin importar crisis.' },
+      VOO: { name: 'Vanguard S&P 500 ETF', price: '$705,30 USD', per: '24,5x (Mercado)', div: '1,30% anual', roe: '22%', risk: 'Bajo-Medio', scores: [82, 80, 98, 70], note: 'Tu núcleo intocable: agrupa las 500 mayores empresas de EE. UU. con solo 0,03% de comisión anual.' },
+      NVDA: { name: 'NVIDIA Corp.', price: '$214,13 USD', per: '38,4x (Muy Alto)', div: '0,03% anual', roe: '91%', risk: 'Alto', scores: [52, 98, 65, 15], note: 'Crecimiento explosivo en chips de IA, pero con alta volatilidad ante cualquier noticia del sector.' },
+      AAPL: { name: 'Apple Inc.', price: '$343,46 USD', per: '31,0x (Premium)', div: '0,45% anual', roe: '140%', risk: 'Medio', scores: [65, 75, 94, 45], note: 'Ecosistema de consumo fidelizado y recompras masivas, aunque ya pesa ~7% dentro de tu VOO.' }
+    };
+
+    const scenariosData = {
+      A: {
+        situation: 'Imagina que la próxima semana Nu Holdings (NU) publica excelentes resultados trimestrales y la acción salta de $14,70 USD a $16,80 USD (+14%). Tu tesis original dice: "Toma parcial de ganancias si supera los $16,00 USD".',
+        question: '¿Qué decisión ejecutas en Hapi?',
+        options: [
+          { text: 'Vendo entre el 30% y 50% de mi posición en NU en horario de mercado para asegurar ganancia y paso esos dólares a VOO o KO.', correct: true, feedback: '¡Brillante! Cumples tu regla de salida sin dejarte llevar por la codicia, aseguras utilidad en dólares y fortaleces tu núcleo.' },
+          { text: 'Me dejo llevar por la euforia y meto todos mis ahorros a NU a $16,80 USD pensando que subirá para siempre.', correct: false, feedback: 'Cuidado: eso es FOMO (miedo a quedarse fuera). Comprar tras una subida vertical rompe tu disciplina y eleva tu riesgo.' }
+        ]
+      },
+      B: {
+        situation: 'Llega el día de tu aporte mensual de $25 USD y ves en las noticias que el dólar en Colombia subió de repente de $3.174 COP a $3.600 COP por incertidumbre política.',
+        question: '¿Cómo manejas tu aporte de ese mes?',
+        options: [
+          { text: 'Dejo los $80.000 COP ganando 11% E.A. en mi cuenta puente remunerada en Colombia y espero unas semanas o acumulo con el mes siguiente.', correct: true, feedback: '¡Excelente criterio! Tu cuenta puente te paga rendimientos en pesos mientras evitas comprar dólares en un pico de nerviosismo cambiario y además diluyes la comisión de PSE.' },
+          { text: 'Me asusto, cancelo mi plan de inversión definitivamente y me gasto el dinero.', correct: false, feedback: 'Error: la volatilidad cambiaria es normal en Colombia; la cuenta puente existe precisamente para darte flexibilidad sin abandonar el hábito.' }
+        ]
+      },
+      C: {
+        situation: 'Wall Street tiene una semana de corrección y ves que VOO y Google caen un -6%. Tu portafolio de $25 USD marca -$1,40 USD en rojo.',
+        question: '¿Cuál es la jugada de un inversor formado?',
+        options: [
+          { text: 'Mantengo la calma absoluta (no vendo nada) y aprovecho mi siguiente aporte mensual para comprar más fracciones de VOO y GOOGL con 6% de descuento.', correct: true, feedback: '¡Mentalidad ganadora! En la etapa de acumulación, las caídas del mercado son rebajas que te permiten adquirir más participación de grandes empresas con los mismos $25 USD.' },
+          { text: 'Vendo todo en pérdida para "proteger" mis $23 USD restantes.', correct: false, feedback: 'Si vendes en una caída temporal, conviertes una fluctuación en papel en una pérdida real definitiva.' }
+        ]
+      }
+    };
+
+    const lessonsData = {
+      '1': {
+        title: 'El Indicador PER (Price-to-Earnings): Por qué compraste Google más barato que el promedio',
+        summary: 'El precio de una acción en dólares ($344 de Google vs $14 de Nu) NO dice cuál empresa es más cara o más barata. Lo que importa es cuántas veces estás pagando sus ganancias anuales (el múltiplo PER).',
+        exampleTitle: 'Comparación Real con tus Activos de Hoy:',
+        bullets: [
+          '<strong>Alphabet (GOOGL) tiene un PER de ~17,3x:</strong> Significa que a su ritmo actual de ganancias, la empresa recupera todo su valor en bolsa en ~17 años. Está por debajo del promedio del S&P 500 (~24x).',
+          '<strong>Microsoft (MSFT) tiene un PER de ~29,5x:</strong> El mercado exige pagar una prima más alta por su estabilidad de software empresarial.',
+          '<strong>Regla práctica para tus compras mensuales:</strong> Cuando veas a una empresa líder como Google con un PER debajo de 20x mientras sus ingresos siguen creciendo, estás comprando calidad a precio de descuento.'
+        ],
+        quizQuestion: 'Si la Empresa A cuesta $500 USD y tiene un PER de 15x, y la Empresa B cuesta $20 USD y tiene un PER de 45x, ¿cuál está más barata respecto a las ganancias que produce?',
+        quizOptions: [
+          { text: 'La Empresa A ($500 USD con PER 15x), porque pagas menos por cada dólar de ganancia real.', correct: true },
+          { text: 'La Empresa B ($20 USD con PER 45x), porque el precio por acción en dólares es más bajo.', correct: false }
+        ]
+      },
+      '2': {
+        title: 'Cómo aprovechar los días rojos de tu pantalla de Hapi',
+        summary: 'En las capturas que tomaste el fin de semana viste varios números en rojo (-1,09% VOO, -2,47% GOOGL). Para un inversionista que aporta $25 USD cada mes, un día rojo antes de tu compra es una rebaja de precios.',
+        exampleTitle: 'Matemática Aplicada a tus $25 USD:',
+        bullets: [
+          '<strong>Con $14 USD en VOO a $705 USD:</strong> Compras 0,0198 fracciones del S&P 500.',
+          '<strong>Si el próximo mes el mercado cae un 5% (VOO a $670 USD):</strong> Tus mismos $14 USD compran <strong>0,0209 fracciones</strong> (acumulas más unidades por el mismo dinero).',
+          '<strong>Regla de oro:</strong> Nunca canceles tu aporte mensual porque las noticias digan que la bolsa cayó; ahí es cuando el DCA acelera tu riqueza futura.'
+        ],
+        quizQuestion: 'Si el mes entrante ves que VOO y Google cayeron un 4% en la semana de tu recarga, ¿qué debes hacer?',
+        quizOptions: [
+          { text: 'Ejecutar mi compra programada de $25 USD normalmente para adquirir más fracciones a menor precio.', correct: true },
+          { text: 'Vender mis fracciones actuales por miedo a que sigan bajando.', correct: false }
+        ]
+      },
+            '4': {
+        title: 'LEC-004: Bitcoin, Criptoactivos y la Regla del Satélite (Tope del 15%)',
+        summary: 'En tu cuenta de Hapi combinaste el premio de $1,00 USD en BTC con una compra de mercado de $4,04 USD para armar un satélite de $5,00 USD en Bitcoin. Aprende cómo integrarlo a tu método sin arriesgar tu patrimonio.',
+        exampleTitle: 'Diferencias Críticas entre Acciones/ETFs y Bitcoin:',
+        bullets: [
+          '<strong>VOO y Google producen flujo de caja:</strong> Tienen ventas, beneficios y recompran acciones o pagan dividendos. Su valor depende de la economía real.',
+          '<strong>Bitcoin no produce flujo ni dividendos:</strong> Su valor proviene de la escasez digital (21 millones de monedas) y la adopción global. Es un activo de oferta inelástica altamente volátil.',
+          '<strong>La Regla de Oro del Asesor:</strong> Un inversor inteligente jamás destina más del 10% a 15% de su patrimonio total a cripto. En tu mes 1 pesa 19,6%, por lo que en el mes 2 no necesitas comprar más BTC; alimentarás tu núcleo VOO.'
+        ],
+        quizQuestion: 'Si Bitcoin sube mucho o cae 15% esta semana, ¿cuál es la conducta correcta según tu protocolo?',
+        quizOptions: [
+          { text: 'Mantener la posición con disciplina (Hold) sin meterle más dinero de emergencia y dejar que los aportes del mes 2 vayan a VOO.', correct: true },
+          { text: 'Vender todo mi VOO para meterlo a Bitcoin por euforia o miedo.', correct: false }
+        ]
+      },
+      '3': {
+        title: 'Cómo funcionan los Dividendos en Dólares dentro de Hapi',
+        summary: 'Tanto VOO como Google (y opciones como Coca-Cola) reparten parte de sus ganancias en efectivo cada trimestre directamente a tu saldo de Hapi, incluso si solo tienes fracciones.',
+        exampleTitle: 'Qué pasa cuando VOO o KO te pagan dividendos:',
+        bullets: [
+          '<strong>Pago proporcional:</strong> Si el dividendo es de $1,70 USD por acción completa, tu fracción recibe exactamente el porcentaje que te corresponde en centavos de dólar.',
+          '<strong>Retención automática (W-8BEN):</strong> Por residir en Colombia, EE. UU. descuenta automáticamente el 30% de impuesto sobre el dividendo (no sobre tu capital) y Hapi te abona el 70% neto listo para reinvertir.',
+          '<strong>Bola de nieve:</strong> Esos centavos se suman a tu Poder de Compra para tu siguiente orden mensual sin pagar comisión de depósito PSE.'
+        ],
+        quizQuestion: '¿Debes hacer algún trámite en EE. UU. cuando recibes un dividendo en Hapi?',
+        quizOptions: [
+          { text: 'No, Hapi aplica automáticamente la retención de EE. UU. y me deposita el efectivo neto en mi cuenta.', correct: true },
+          { text: 'Sí, debo presentar declaración de impuestos en Nueva York por cada dividendo.', correct: false }
+        ]
+      }
+    };
+
+    function renderPositionsTable() {
+      const tbody = document.getElementById('positionsTableBody');
+      tbody.innerHTML = '';
+      realPositions.forEach(pos => {
+        const invStr = displayCurrency === 'USD'
+          ? '$' + pos.investedUSD.toFixed(2) + ' USD'
+          : '$' + Math.round(pos.investedUSD * TRM).toLocaleString('es-CO') + ' COP';
+        const priceStr = displayCurrency === 'USD'
+          ? '$' + pos.priceUSD.toFixed(2) + ' USD'
+          : '$' + Math.round(pos.priceUSD * TRM).toLocaleString('es-CO') + ' COP';
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-800/40 transition';
+        tr.innerHTML = `
+          <td class="py-3 pr-3">
+            <div class="font-bold text-white">${pos.ticker}</div>
+            <div class="text-[11px] text-slate-400">${pos.name}</div>
+          </td>
+          <td class="py-3 px-3 text-xs text-slate-300">${pos.role}</td>
+          <td class="py-3 px-3 font-mono text-xs text-slate-200">${pos.shares.toFixed(4)}</td>
+          <td class="py-3 px-3 font-bold text-white">${invStr}</td>
+          <td class="py-3 px-3 text-slate-300">${priceStr}</td>
+          <td class="py-3 px-3">
+            <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              ${pos.changePct}
+            </span>
+          </td>
+          <td class="py-3 pl-3 text-right font-bold text-slate-200">${pos.weight}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderLesson(id) {
+      const data = lessonsData[id];
+      const container = document.getElementById('lessonContentArea');
+      container.innerHTML = `
+        <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/70 space-y-3">
+          <h4 class="text-base font-bold text-white">${data.title}</h4>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${data.summary}</p>
+          <div class="pt-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400 block mb-2">${data.exampleTitle}</span>
+            <ul class="space-y-2 text-xs sm:text-sm text-slate-200">
+              ${data.bullets.map(b => `<li class="flex items-start gap-2"><span class="text-blue-400 font-bold">▸</span><span>${b}</span></li>`).join('')}
+            </ul>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl bg-blue-950/40 border border-blue-500/30 space-y-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-300">Validación Práctica (1 clic)</span>
+          <p class="text-xs sm:text-sm font-semibold text-white">${data.quizQuestion}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="quizOptionsBox">
+            ${data.quizOptions.map((opt) => `
+              <button data-correct="${opt.correct}" class="quiz-opt-btn text-left p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 transition">
+                ${opt.text}
+              </button>
+            `).join('')}
+          </div>
+          <div id="quizFeedback" class="hidden text-xs font-semibold p-2.5 rounded-lg"></div>
+        </div>
+      `;
+
+      container.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const isCorrect = btn.getAttribute('data-correct') === 'true';
+          const fb = document.getElementById('quizFeedback');
+          fb.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'bg-rose-500/20', 'text-rose-300');
+          if (isCorrect) {
+            fb.classList.add('bg-emerald-500/20', 'text-emerald-300');
+            fb.textContent = '¡Exacto! Ese es el criterio institucional para tomar decisiones con tus $25 USD mensuales.';
+          } else {
+            fb.classList.add('bg-rose-500/20', 'text-rose-300');
+            fb.textContent = 'Piénsalo de nuevo: recuerda mirar el valor relativo y el largo plazo en lugar del precio nominal.';
+          }
+        });
+      });
+    }
+
+    function renderScenario(key) {
+      const sc = scenariosData[key];
+      const box = document.getElementById('scenarioBox');
+      box.innerHTML = `
+        <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">${sc.situation}</p>
+        <p class="text-xs font-bold text-indigo-300">${sc.question}</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          ${sc.options.map(o => `
+            <button data-correct="${o.correct}" data-feedback="${o.feedback}" class="sc-opt-btn text-left p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 transition">
+              ${o.text}
+            </button>
+          `).join('')}
+        </div>
+        <div id="scFeedbackBox" class="hidden text-xs font-semibold p-3 rounded-xl"></div>
+      `;
+
+      box.querySelectorAll('.sc-opt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ok = btn.getAttribute('data-correct') === 'true';
+          const text = btn.getAttribute('data-feedback');
+          const fb = document.getElementById('scFeedbackBox');
+          fb.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'bg-rose-500/20', 'text-rose-300');
+          fb.classList.add(ok ? 'bg-emerald-500/20' : 'bg-rose-500/20', ok ? 'text-emerald-300' : 'text-rose-300');
+          fb.textContent = text;
+        });
+      });
+    }
+
+    function renderRadar(filter) {
+      const grid = document.getElementById('radarCardsGrid');
+      grid.innerHTML = '';
+      const filtered = filter === 'ALL' ? radarAssets : radarAssets.filter(a => a.category === filter);
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-800/60 border border-slate-700/70 rounded-xl p-4 flex flex-col justify-between space-y-3';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-base font-extrabold text-white">${item.ticker}</span>
+              <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${item.badgeColor}">${item.status}</span>
+            </div>
+            <p class="text-xs text-slate-400">${item.name}</p>
+            <div class="mt-2 flex items-center gap-3 text-xs">
+              <span class="text-slate-200 font-semibold">Precio: ${item.price}</span>
+              <span class="text-slate-400">•</span>
+              <span class="text-amber-300 font-medium">PER: ${item.per}</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed border-t border-slate-700/60 pt-2.5">${item.verdict}</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    let compChartInstance = null;
+    function renderComparator() {
+      const tkA = document.getElementById('compSelectA').value;
+      const tkB = document.getElementById('compSelectB').value;
+      const a = compDatabase[tkA];
+      const b = compDatabase[tkB];
+
+      const container = document.getElementById('compCardsContainer');
+      container.innerHTML = [
+        { tk: tkA, d: a, color: 'border-blue-500/50 bg-blue-950/20' },
+        { tk: tkB, d: b, color: 'border-emerald-500/50 bg-emerald-950/20' }
+      ].map(item => `
+        <div class="p-4 rounded-xl border ${item.color} space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-extrabold text-white">${item.tk}</span>
+              <span class="text-xs font-bold text-slate-300">${item.d.price}</span>
+            </div>
+            <p class="text-xs text-slate-400">${item.d.name}</p>
+            <div class="mt-3 space-y-1.5 text-xs">
+              <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">Múltiplo PER:</span><span class="font-semibold text-amber-300">${item.d.per}</span></div>
+              <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">Dividendo Anual:</span><span class="font-semibold text-white">${item.d.div}</span></div>
+              <div class="flex justify-between py-1 border-b border-slate-800"><span class="text-slate-400">Rentabilidad ROE:</span><span class="font-semibold text-emerald-400">${item.d.roe}</span></div>
+              <div class="flex justify-between py-1"><span class="text-slate-400">Nivel de Riesgo:</span><span class="font-semibold text-slate-200">${item.d.risk}</span></div>
+            </div>
+          </div>
+          <p class="text-xs text-slate-300 pt-2 border-t border-slate-800/80">${item.d.note}</p>
+        </div>
+      `).join('');
+
+      const avgA = Math.round(a.scores.reduce((s, v) => s + v, 0) / 4);
+      const avgB = Math.round(b.scores.reduce((s, v) => s + v, 0) / 4);
+      const banner = document.getElementById('compWinnerBanner');
+      if (tkA === tkB) {
+        banner.innerHTML = 'Selecciona dos empresas distintas arriba para comparar sus fortalezas.';
+      } else if (avgA >= avgB) {
+        banner.innerHTML = `<strong>Veredicto (${tkA} ${avgA} pts vs ${tkB} ${avgB} pts):</strong> <strong>${tkA}</strong> ofrece hoy mejor balance general entre valoración y solidez para tu portafolio.`;
+      } else {
+        banner.innerHTML = `<strong>Veredicto (${tkB} ${avgB} pts vs ${tkA} ${avgA} pts):</strong> <strong>${tkB}</strong> destaca con mejor perfil global en este momento.`;
+      }
+
+      const ctx = document.getElementById('compChartCanvas').getContext('2d');
+      if (compChartInstance) compChartInstance.destroy();
+      compChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Precio/Valor', 'Crecimiento', 'Solidez', 'Dividendos'],
+          datasets: [
+            { label: tkA, data: a.scores, backgroundColor: '#3b82f6', borderRadius: 4 },
+            { label: tkB, data: b.scores, backgroundColor: '#10b981', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
+            y: { min: 0, max: 100, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.1)' } }
+          }
+        }
+      });
+    }
+
+    function updatePlanAllocator() {
+      let vooPct = parseInt(document.getElementById('allocVooSlider').value, 10);
+      let techPct = parseInt(document.getElementById('allocTechSlider').value, 10);
+      if (vooPct + techPct > 100) {
+        techPct = 100 - vooPct;
+        document.getElementById('allocTechSlider').value = techPct;
+      }
+      const sat2Pct = 100 - vooPct - techPct;
+
+      const vooUSD = (planDepositAmount * vooPct) / 100;
+      const techUSD = (planDepositAmount * techPct) / 100;
+      const sat2USD = (planDepositAmount * sat2Pct) / 100;
+
+      document.getElementById('allocVooLabel').textContent = `${vooPct}% ($${vooUSD.toFixed(2)} USD)`;
+      document.getElementById('allocTechLabel').textContent = `${techPct}% ($${techUSD.toFixed(2)} USD)`;
+      document.getElementById('allocSat2Label').textContent = `${sat2Pct}% ($${sat2USD.toFixed(2)} USD)`;
+      document.getElementById('allocSat2Bar').style.width = sat2Pct + '%';
+
+      const pseFeePct = ((1.99 / planDepositAmount) * 100).toFixed(1);
+      const copTotal = Math.round((planDepositAmount + 1.99) * TRM).toLocaleString('es-CO');
+
+      document.getElementById('planSummaryBox').innerHTML = `
+        <div class="flex justify-between"><span>Monto a debitar por PSE (+ $1,99 comisión):</span><strong class="text-white">$${(planDepositAmount + 1.99).toFixed(2)} USD (~$${copTotal} COP)</strong></div>
+        <div class="flex justify-between"><span>Impacto porcentual de la comisión PSE:</span><strong class="${planDepositAmount === 50 ? 'text-emerald-400' : 'text-amber-400'}">${pseFeePct}% del aporte</strong></div>
+        <div class="pt-1.5 border-t border-slate-700 text-slate-300">
+          <strong>Órdenes a programar:</strong> $${vooUSD.toFixed(2)} USD en <strong>VOO</strong> (~${(vooUSD / 705.30).toFixed(4)} uds) + $${techUSD.toFixed(2)} USD en <strong>GOOGL/MSFT</strong> + $${sat2USD.toFixed(2)} USD en <strong>KO/NU</strong>.
+        </div>
+      `;
+    }
+
+    let dcaChartInstance = null;
+    function updateSimulator() {
+      const monthly = parseFloat(document.getElementById('simMonthlyInput').value);
+      const years = parseInt(document.getElementById('simYearsInput').value, 10);
+      const rate = parseFloat(document.getElementById('simRateInput').value) / 100;
+
+      document.getElementById('simMonthlyLabel').textContent = '$' + monthly + ' USD';
+      document.getElementById('simYearsLabel').textContent = years + (years === 1 ? ' año' : ' años');
+      document.getElementById('simRateLabel').textContent = (rate * 100).toFixed(0) + '% E.A.';
+
+      const labels = ['Inicio'];
+      const contributedData = [25];
+      const balanceData = [25];
+
+      let balance = 25;
+      let contributed = 25;
+      const monthlyRate = Math.pow(1 + rate, 1 / 12) - 1;
+
+      for (let y = 1; y <= years; y++) {
+        for (let m = 1; m <= 12; m++) {
+          balance = (balance + monthly) * (1 + monthlyRate);
+          contributed += monthly;
+        }
+        labels.push('Año ' + y);
+        contributedData.push(Math.round(contributed));
+        balanceData.push(Math.round(balance));
+      }
+
+      const finalBal = Math.round(balance);
+      const finalContrib = Math.round(contributed);
+      const totalInt = finalBal - finalContrib;
+
+      document.getElementById('simTotalContributed').textContent = '$' + finalContrib.toLocaleString('es-CO') + ' USD';
+      document.getElementById('simTotalInterest').textContent = '+$' + totalInt.toLocaleString('es-CO') + ' USD';
+      document.getElementById('simFinalBalance').textContent = '$' + finalBal.toLocaleString('es-CO') + ' USD';
+      document.getElementById('simFinalCOP').textContent = '~$' + Math.round(finalBal * TRM).toLocaleString('es-CO') + ' COP';
+
+      const ctx = document.getElementById('dcaSimChart').getContext('2d');
+      if (dcaChartInstance) {
+        dcaChartInstance.destroy();
+      }
+      dcaChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Valor Total del Portafolio (USD)',
+              data: balanceData,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.15)',
+              fill: true,
+              tension: 0.35,
+              borderWidth: 2.5
+            },
+            {
+              label: 'Capital Puesto de tu Bolsillo (USD)',
+              data: contributedData,
+              borderColor: '#60a5fa',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0.1,
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#cbd5e1', font: { size: 11 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+            y: { ticks: { color: '#94a3b8', callback: v => '$' + v }, grid: { color: 'rgba(148, 163, 184, 0.1)' } }
+          }
+        }
+      });
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+      document.getElementById('view-' + tabName).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(b => {
+        b.classList.remove('tab-active');
+        b.classList.add('bg-slate-800/80', 'text-slate-300');
+      });
+      const activeBtn = document.getElementById('tabBtn-' + tabName);
+      if (activeBtn) {
+        activeBtn.classList.add('tab-active');
+        activeBtn.classList.remove('bg-slate-800/80', 'text-slate-300');
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+
+      if (tabName === 'simulador') updateSimulator();
+      if (tabName === 'comparador') renderComparator();
+      if (tabName === 'planificador') updatePlanAllocator();
+    }
+
+    
+    
+    const GOOGLE_SHEET_ID = '1cGYgRlmaJ0_IbDHnnDFSF3wQ7e8CF10XPU4OzKLVHIE';
+
+    async function fetchGvizSheet(sheetName) {
+      const url = 'https://docs.google.com/spreadsheets/d/' + GOOGLE_SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(sheetName);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      const start = text.indexOf('{');
+      const end = text.lastIndexOf('}');
+      if (start === -1 || end === -1) throw new Error('Formato JSON de Google Sheets inválido');
+      return JSON.parse(text.substring(start, end + 1)).table;
+    }
+
+    async function syncWithGoogleSheet() {
+      const badge = document.getElementById('liveSyncBadge');
+      try {
+        // 1. Obtener TRM y resumen financiero en vivo
+        const resumenTable = await fetchGvizSheet('resumen_portafolio');
+        if (resumenTable && resumenTable.rows) {
+          const trmRow = resumenTable.rows.find(r => r.c && r.c[0] && String(r.c[0].v).toUpperCase().includes('TRM'));
+          if (trmRow && trmRow.c && trmRow.c[1]) {
+            let trmRaw = trmRow.c[1].v;
+            let parsedTRM = typeof trmRaw === 'number' ? trmRaw : parseFloat(String(trmRaw).replace(/[^0-9,.]/g, '').replace('.', '').replace(',', '.'));
+            if (!isNaN(parsedTRM) && parsedTRM > 1000) {
+              TRM = parsedTRM;
+              const trmEl = document.getElementById('headerTrmVal');
+              if (trmEl) trmEl.textContent = '$' + TRM.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' COP';
+              renderPositionsTable();
+              if (typeof updatePlanAllocator === 'function') updatePlanAllocator();
+            }
+          }
+        }
+
+        // 2. Obtener lección activa de bitacora_capacitacion
+        const bitacoraTable = await fetchGvizSheet('bitacora_capacitacion');
+        if (bitacoraTable && bitacoraTable.rows) {
+          for (const row of bitacoraTable.rows) {
+            if (!row.c || !row.c[0]) continue;
+            const estado = String((row.c[4] && row.c[4].v) || '').toUpperCase();
+            if (estado === 'EN_CURSO') {
+              const id = String(row.c[0].v);
+              const numMatch = id.match(/\d+/);
+              const key = numMatch ? String(parseInt(numMatch[0], 10)) : id;
+              const modulo = row.c[1] ? row.c[1].v : 'Capacitación';
+              const tema = row.c[2] ? row.c[2].v : 'Lección del Día';
+              const objetivo = row.c[3] ? row.c[3].v : 'Objetivo operativo del portafolio en Hapi.';
+              const notas = row.c[6] ? row.c[6].v : 'Comprender el activo y su rol en tu portafolio.';
+              const conclusion = row.c[7] ? row.c[7].v : 'Mantener aportes y disciplina.';
+
+              lessonsData[key] = {
+                title: id + ': ' + tema,
+                summary: objetivo,
+                exampleTitle: 'Enfoque del Módulo (' + modulo + '):',
+                bullets: [
+                  '<strong>Reto Operativo del Día:</strong> ' + notas,
+                  '<strong>Conclusión y Dictamen de Inversión:</strong> ' + conclusion
+                ],
+                quizQuestion: '¿Cuál es la regla fundamental para esta lección?',
+                quizOptions: [
+                  { text: 'Seguir la disciplina del plan y respetar el tope asignado.', correct: true },
+                  { text: 'Operar por impulsos o emociones del mercado.', correct: false }
+                ]
+              };
+              renderLesson(key);
+              break;
+            }
+          }
+        }
+
+        if (badge) {
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Google Sheet Sincronizado';
+          badge.className = 'text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center justify-end sm:justify-start gap-1.5';
+        }
+      } catch (err) {
+        console.log('Modo local (Google Sheet aún en proceso de enlace público o sin internet):', err);
+        if (badge) {
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400/80"></span> Centinela Activo (Hapi)';
+          badge.className = 'text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center justify-end sm:justify-start gap-1.5';
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      syncWithGoogleSheet();
+      syncWithGoogleSheet();
+      renderPositionsTable();
+      renderLesson('4');
+      renderScenario('A');
+      renderRadar('ALL');
+      updatePlanAllocator();
+
+      const allocCtx = document.getElementById('allocationChart').getContext('2d');
+      new Chart(allocCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['GOOGL ($10 Pend.)', 'VOO ($5 Pend.)', 'NU ($5 Listo)', 'BTC ($5 Listo)', 'Caja ($0.51)'],
+          datasets: [{
+            data: [10, 5, 5, 5, 0.51],
+            backgroundColor: ['#10b981', '#2563eb', '#8b5cf6', '#f59e0b', '#38bdf8'],
+            borderColor: '#0f172a',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 11 }, padding: 12 } }
+          }
+        }
+      });
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+      });
+
+      document.getElementById('quickGoDictamen').addEventListener('click', () => switchTab('dictamen'));
+      document.getElementById('quickGoComparador').addEventListener('click', () => switchTab('comparador'));
+
+      document.getElementById('currencyToggleUSD').addEventListener('click', () => {
+        displayCurrency = 'USD';
+        document.getElementById('currencyToggleUSD').className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white';
+        document.getElementById('currencyToggleCOP').className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+        renderPositionsTable();
+      });
+      document.getElementById('currencyToggleCOP').addEventListener('click', () => {
+        displayCurrency = 'COP';
+        document.getElementById('currencyToggleCOP').className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white';
+        document.getElementById('currencyToggleUSD').className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+        renderPositionsTable();
+      });
+
+      document.querySelectorAll('.lesson-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.lesson-btn').forEach(b => {
+            b.className = 'lesson-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+          });
+          btn.className = 'lesson-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white';
+          renderLesson(btn.getAttribute('data-lesson'));
+        });
+      });
+
+      document.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.scenario-btn').forEach(b => {
+            b.className = 'scenario-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+          });
+          btn.className = 'scenario-btn px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white';
+          renderScenario(btn.getAttribute('data-scenario'));
+        });
+      });
+
+      document.querySelectorAll('.radar-filter').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.radar-filter').forEach(b => {
+            b.className = 'radar-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700';
+          });
+          btn.className = 'radar-filter px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white';
+          renderRadar(btn.getAttribute('data-filter'));
+        });
+      });
+
+      document.getElementById('compSelectA').addEventListener('change', renderComparator);
+      document.getElementById('compSelectB').addEventListener('change', renderComparator);
+
+      document.getElementById('planDeposit25').addEventListener('click', () => {
+        planDepositAmount = 25;
+        document.getElementById('planDeposit25').className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white border border-blue-400';
+        document.getElementById('planDeposit50').className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700';
+        updatePlanAllocator();
+      });
+      document.getElementById('planDeposit50').addEventListener('click', () => {
+        planDepositAmount = 50;
+        document.getElementById('planDeposit50').className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-blue-600 text-white border border-blue-400';
+        document.getElementById('planDeposit25').className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700';
+        updatePlanAllocator();
+      });
+      document.getElementById('allocVooSlider').addEventListener('input', updatePlanAllocator);
+      document.getElementById('allocTechSlider').addEventListener('input', updatePlanAllocator);
+
+      ['simMonthlyInput', 'simYearsInput', 'simRateInput'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateSimulator);
+      });
+    });
+  </script>
+</body>
+</html>
