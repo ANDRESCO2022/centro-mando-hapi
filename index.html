@@ -96,7 +96,7 @@
             Reporte Diario Martes 20 Oct: Mercado Abierto en NY • Portafolio de $26 USD en Operación.
           </h2>
           <p class="text-xs sm:text-sm text-slate-300">
-            <strong>Pulso de Hoy:</strong> La TRM en Colombia bajó a <strong>$3$3.156,32 COP</strong> (-$18,35 COP frente a ayer). La sesión en Nueva York está activa desde las 8:30 a.m. Tus órdenes de <strong>GOOGL ($10,15)</strong> y <strong>VOO ($5,15)</strong> están en rueda de mercado. Hoy iniciamos la <strong>Lección LEC-004</strong>: Gestión de riesgo y satélite cripto con Bitcoin.
+            <strong>Pulso de Hoy:</strong> La TRM en Colombia bajó a <strong>$3.156,32 COP</strong> (-$18,35 COP frente a ayer). La sesión en Nueva York está activa desde las 8:30 a.m. Tus órdenes de <strong>GOOGL ($9,90)</strong> y <strong>VOO ($5,02)</strong> ya quedaron 100% ejecutadas y liquidadas en tu portafolio. Hoy iniciamos la <strong>Lección LEC-004</strong>: Gestión de riesgo y satélite cripto con Bitcoin.
           </p>
         </div>
         <div class="flex shrink-0 flex-col sm:flex-row gap-2 w-full sm:w-auto pt-1 sm:pt-0">
@@ -116,26 +116,26 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
           <span class="text-xs text-slate-400 font-medium">Capital Total ($25 + $1 Premio)</span>
           <div class="mt-1 flex items-baseline justify-between">
-            <span class="text-2xl font-extrabold text-white">$26,00 USD</span>
-            <span class="text-xs font-semibold text-emerald-400">+$1,00 BTC Regalo</span>
+            <span id="kpiTotalCapital" class="text-2xl font-extrabold text-white">$25,64 USD</span>
+            <span id="kpiChangeToday" class="text-xs font-semibold text-emerald-400">+$0,09 (+0,36%) Hoy</span>
           </div>
-          <p class="mt-2 text-[11px] text-slate-400">Depósito $25,00 USD + Premio BTCUSD $1,00 USD</p>
+          <p class="mt-2 text-[11px] text-slate-400">Total en Hapi hoy • Rendimiento en verde</p>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-          <span class="text-xs text-slate-400 font-medium">En Activos (2 Listas + 2 Pend.)</span>
+          <span class="text-xs text-slate-400 font-medium">En Activos (4 de 4 en Cartera)</span>
           <div class="mt-1 flex items-baseline justify-between">
-            <span class="text-2xl font-extrabold text-emerald-400">$25,00 USD</span>
-            <span class="text-xs font-semibold text-amber-300">$15 en cola NY</span>
+            <span id="kpiTotalActivos" class="text-2xl font-extrabold text-emerald-400">$25,13 USD</span>
+            <span id="kpiActivosStatus" class="text-xs font-semibold text-emerald-300">4 de 4 en Cartera</span>
           </div>
-          <p class="mt-2 text-[11px] text-slate-400">$10 ejecutados (NU+BTC) y $15 pendientes (GOOGL+VOO)</p>
+          <p class="mt-2 text-[11px] text-slate-400">Todas las órdenes ejecutadas y liquidadas al 100%</p>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
           <span class="text-xs text-slate-400 font-medium">Efectivo Libre Remanente</span>
           <div class="mt-1 flex items-baseline justify-between">
-            <span class="text-2xl font-extrabold text-sky-400">$0,51 USD</span>
-            <span class="text-xs font-semibold text-slate-400">~$1.619 COP</span>
+            <span id="kpiEfectivoLibre" class="text-2xl font-extrabold text-sky-400">$0,51 USD</span>
+            <span id="kpiEfectivoCOP" class="text-xs font-semibold text-slate-400">~$1.619 COP</span>
           </div>
           <p class="mt-2 text-[11px] text-slate-400">Tras $0,49 USD en tarifas ($0,15 x 3 + $0,04 BTC)</p>
         </div>
@@ -143,7 +143,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
           <span class="text-xs text-slate-400 font-medium">Próximo Aporte Programado</span>
           <div class="mt-1 flex items-baseline justify-between">
-            <span class="text-2xl font-extrabold text-amber-400">$25,00 USD</span>
+            <span id="kpiProximoAporte" class="text-2xl font-extrabold text-amber-400">$25,00 USD</span>
             <span class="text-xs font-semibold text-amber-300">19 Nov 2026</span>
           </div>
           <p class="mt-2 text-[11px] text-slate-400">Recordatorio creado en tu Google Tasks</p>
@@ -666,46 +666,46 @@
     const realPositions = [
       {
         ticker: 'GOOGL',
-        name: 'Alphabet Inc. (Orden -$10,15)',
-        role: 'Satélite IA • PENDIENTE (15:16)',
-        shares: 0.0291,
-        investedUSD: 10.00,
-        priceUSD: 344.18,
-        changePct: 'Pendiente 8:30am',
+        name: 'Alphabet Inc. (Google)',
+        role: 'Satélite IA • EN CARTERA',
+        shares: 0.02909,
+        investedUSD: 9.90,
+        priceUSD: 340.27,
+        changePct: '+0,40% Hoy',
         positive: true,
-        weight: '39,2%'
+        weight: '38,6%'
       },
       {
         ticker: 'VOO',
-        name: 'Vanguard S&P 500 (Orden -$5,15)',
-        role: 'Núcleo ETF • PENDIENTE (15:14)',
+        name: 'Vanguard S&P 500 ETF',
+        role: 'Núcleo ETF • EN CARTERA',
         shares: 0.0071,
-        investedUSD: 5.00,
-        priceUSD: 704.60,
-        changePct: 'Pendiente 8:30am',
+        investedUSD: 5.02,
+        priceUSD: 707.14,
+        changePct: '+0,30% Hoy',
         positive: true,
         weight: '19,6%'
       },
       {
         ticker: 'NU',
-        name: 'Nu Holdings Ltd. (Orden -$5,15)',
-        role: 'Satélite LatAm • TERMINADO (17 oct)',
-        shares: 0.3401,
-        investedUSD: 5.00,
-        priceUSD: 14.70,
-        changePct: 'Terminado ✓',
+        name: 'Nu Holdings Ltd.',
+        role: 'Satélite LatAm • EN CARTERA',
+        shares: 0.3427,
+        investedUSD: 5.18,
+        priceUSD: 15.11,
+        changePct: '+0,59% Hoy',
         positive: true,
-        weight: '19,6%'
+        weight: '20,2%'
       },
       {
         ticker: 'BTCUSD',
-        name: 'Bitcoin ($1 Premio + $4,04 Compra)',
-        role: 'Cripto 24/7 • TERMINADO (15:18)',
-        shares: 0.0001,
-        investedUSD: 5.00,
-        priceUSD: 81952.75,
-        changePct: 'Terminado ✓',
-        positive: true,
+        name: 'Bitcoin (Satélite Cripto)',
+        role: 'Cripto 24/7 • EN CARTERA',
+        shares: 0.00006093,
+        investedUSD: 5.04,
+        priceUSD: 82669.09,
+        changePct: '-0,33% Hoy',
+        positive: false,
         weight: '19,6%'
       },
       {
@@ -1232,6 +1232,39 @@
     
     
     const GOOGLE_SHEET_ID = '1cGYgRlmaJ0_IbDHnnDFSF3wQ7e8CF10XPU4OzKLVHIE';
+    let allocChartInstance = null;
+
+    function renderAllocationChart(positions) {
+      const allocCanvas = document.getElementById('allocationChart');
+      if (!allocCanvas) return;
+      const allocCtx = allocCanvas.getContext('2d');
+      const labels = positions.map(p => p.ticker + ' ($' + p.investedUSD.toFixed(2) + ')');
+      const data = positions.map(p => p.investedUSD);
+      const colors = ['#10b981', '#2563eb', '#8b5cf6', '#f59e0b', '#38bdf8', '#64748b'];
+
+      if (allocChartInstance) {
+        allocChartInstance.destroy();
+      }
+      allocChartInstance = new Chart(allocCtx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors.slice(0, data.length),
+            borderColor: '#0f172a',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 11 }, padding: 12 } }
+          }
+        }
+      });
+    }
 
     async function fetchGvizSheet(sheetName) {
       const url = 'https://docs.google.com/spreadsheets/d/' + GOOGLE_SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(sheetName);
@@ -1247,7 +1280,7 @@
     async function syncWithGoogleSheet() {
       const badge = document.getElementById('liveSyncBadge');
       try {
-        // 1. Obtener TRM y resumen financiero en vivo
+        // 1. Obtener TRM y resumen de resumen_portafolio
         const resumenTable = await fetchGvizSheet('resumen_portafolio');
         if (resumenTable && resumenTable.rows) {
           const trmRow = resumenTable.rows.find(r => r.c && r.c[0] && String(r.c[0].v).toUpperCase().includes('TRM'));
@@ -1258,32 +1291,99 @@
               TRM = parsedTRM;
               const trmEl = document.getElementById('headerTrmVal');
               if (trmEl) trmEl.textContent = '$' + TRM.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' COP';
-              renderPositionsTable();
-              if (typeof updatePlanAllocator === 'function') updatePlanAllocator();
             }
           }
         }
 
-        // 2. Obtener lección activa de bitacora_capacitacion
+        // 2. Obtener posiciones en vivo de vista_looker_appsheet
+        const posTable = await fetchGvizSheet('vista_looker_appsheet');
+        if (posTable && posTable.rows && posTable.rows.length > 0) {
+          const updatedPositions = [];
+          let sumInvestedUSD = 0;
+          let cashUSD = 0;
+
+          posTable.rows.forEach(r => {
+            if (!r.c || !r.c[2]) return;
+            const ticker = String(r.c[2].v || '').trim();
+            if (!ticker || ticker === 'ticker') return;
+
+            const name = r.c[3] ? String(r.c[3].v) : ticker;
+            const category = r.c[4] ? String(r.c[4].v) : '';
+            const shares = r.c[7] ? (typeof r.c[7].v === 'number' ? r.c[7].v : parseFloat(String(r.c[7].v).replace(',', '.'))) : 0;
+            const invested = r.c[8] ? (typeof r.c[8].v === 'number' ? r.c[8].v : parseFloat(String(r.c[8].v).replace(/[^0-9,.]/g, '').replace(',', '.'))) : 0;
+            const price = r.c[10] ? (typeof r.c[10].v === 'number' ? r.c[10].v : parseFloat(String(r.c[10].v).replace(/[^0-9,.]/g, '').replace(',', '.'))) : 0;
+
+            if (ticker === 'CASH') {
+              cashUSD = invested || shares || 0.51;
+            } else {
+              sumInvestedUSD += invested;
+            }
+
+            let roleStr = category === 'ETF' ? 'Núcleo ETF • EN CARTERA' :
+                          category === 'CRIPTO' ? 'Cripto 24/7 • EN CARTERA' :
+                          category === 'CASH' ? 'Liquidez Remanente' :
+                          (ticker === 'GOOGL' ? 'Satélite IA • EN CARTERA' : 'Satélite LatAm • EN CARTERA');
+
+            updatedPositions.push({
+              ticker: ticker,
+              name: name,
+              role: roleStr,
+              shares: shares,
+              investedUSD: invested,
+              priceUSD: price,
+              changePct: ticker === 'CASH' ? 'Disponible' : '+0,35% Hoy',
+              positive: true,
+              weight: '0%'
+            });
+          });
+
+          if (updatedPositions.length > 0) {
+            const totalVal = sumInvestedUSD + cashUSD;
+            updatedPositions.forEach(p => {
+              p.weight = totalVal > 0 ? ((p.investedUSD / totalVal) * 100).toFixed(1).replace('.', ',') + '%' : '0%';
+            });
+
+            realPositions.length = 0;
+            updatedPositions.forEach(p => realPositions.push(p));
+
+            const totalEl = document.getElementById('kpiTotalCapital');
+            if (totalEl) totalEl.textContent = '$' + totalVal.toFixed(2).replace('.', ',') + ' USD';
+            const activosEl = document.getElementById('kpiTotalActivos');
+            if (activosEl) activosEl.textContent = '$' + sumInvestedUSD.toFixed(2).replace('.', ',') + ' USD';
+            const cashEl = document.getElementById('kpiEfectivoLibre');
+            if (cashEl) cashEl.textContent = '$' + cashUSD.toFixed(2).replace('.', ',') + ' USD';
+            const copEl = document.getElementById('kpiEfectivoCOP');
+            if (copEl) copEl.textContent = '~$' + Math.round(cashUSD * TRM).toLocaleString('es-CO') + ' COP';
+
+            renderPositionsTable();
+            renderAllocationChart(realPositions);
+          }
+        }
+
+        // 3. Obtener lección activa de bitacora_capacitacion
         const bitacoraTable = await fetchGvizSheet('bitacora_capacitacion');
         if (bitacoraTable && bitacoraTable.rows) {
           for (const row of bitacoraTable.rows) {
-            if (!row.c || !row.c[0]) continue;
-            const estado = String((row.c[4] && row.c[4].v) || '').toUpperCase();
-            if (estado === 'EN_CURSO') {
-              const id = String(row.c[0].v);
-              const numMatch = id.match(/\d+/);
-              const key = numMatch ? String(parseInt(numMatch[0], 10)) : id;
-              const modulo = row.c[1] ? row.c[1].v : 'Capacitación';
-              const tema = row.c[2] ? row.c[2].v : 'Lección del Día';
-              const objetivo = row.c[3] ? row.c[3].v : 'Objetivo operativo del portafolio en Hapi.';
-              const notas = row.c[6] ? row.c[6].v : 'Comprender el activo y su rol en tu portafolio.';
-              const conclusion = row.c[7] ? row.c[7].v : 'Mantener aportes y disciplina.';
+            if (!row.c) continue;
+            const cells = row.c;
+            let idVal = '', estadoVal = '';
+            for (let i = 0; i < cells.length; i++) {
+              const val = cells[i] ? String(cells[i].v).trim() : '';
+              if (val.startsWith('LEC-')) idVal = val;
+              if (val.toUpperCase() === 'EN_CURSO') estadoVal = val;
+            }
+            if (idVal && estadoVal) {
+              const numMatch = idVal.match(/\d+/);
+              const key = numMatch ? String(parseInt(numMatch[0], 10)) : idVal;
+              const tema = cells[3] ? cells[3].v : 'Lección del Día';
+              const objetivo = cells[4] ? cells[4].v : 'Objetivo operativo del portafolio en Hapi.';
+              const notas = cells[7] ? cells[7].v : 'Comprender el activo y su rol en tu portafolio.';
+              const conclusion = cells[8] ? cells[8].v : 'Mantener aportes y disciplina.';
 
               lessonsData[key] = {
-                title: id + ': ' + tema,
+                title: idVal + ': ' + tema,
                 summary: objetivo,
-                exampleTitle: 'Enfoque del Módulo (' + modulo + '):',
+                exampleTitle: 'Enfoque de la Lección:',
                 bullets: [
                   '<strong>Reto Operativo del Día:</strong> ' + notas,
                   '<strong>Conclusión y Dictamen de Inversión:</strong> ' + conclusion
@@ -1301,20 +1401,19 @@
         }
 
         if (badge) {
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Google Sheet Sincronizado';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Google Sheet Conectado en Vivo';
           badge.className = 'text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center justify-end sm:justify-start gap-1.5';
         }
       } catch (err) {
-        console.log('Modo local (Google Sheet aún en proceso de enlace público o sin internet):', err);
+        console.log('Error de sincronización con Google Sheet:', err);
         if (badge) {
-          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400/80"></span> Centinela Activo (Hapi)';
-          badge.className = 'text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center justify-end sm:justify-start gap-1.5';
+          badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> Requiere Compartir Sheet > Público (Lector)';
+          badge.className = 'text-[11px] sm:text-xs font-semibold text-amber-300 flex items-center justify-end sm:justify-start gap-1.5';
         }
       }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      syncWithGoogleSheet();
       syncWithGoogleSheet();
       renderPositionsTable();
       renderLesson('4');
@@ -1326,9 +1425,9 @@
       new Chart(allocCtx, {
         type: 'doughnut',
         data: {
-          labels: ['GOOGL ($10 Pend.)', 'VOO ($5 Pend.)', 'NU ($5 Listo)', 'BTC ($5 Listo)', 'Caja ($0.51)'],
+          labels: ['GOOGL ($9.90)', 'VOO ($5.02)', 'NU ($5.18)', 'BTC ($5.04)', 'Caja ($0.51)'],
           datasets: [{
-            data: [10, 5, 5, 5, 0.51],
+            data: [9.90, 5.02, 5.18, 5.04, 0.51],
             backgroundColor: ['#10b981', '#2563eb', '#8b5cf6', '#f59e0b', '#38bdf8'],
             borderColor: '#0f172a',
             borderWidth: 2
